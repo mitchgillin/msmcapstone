@@ -17,8 +17,8 @@
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
-(include-css (if (env :dev) "https://cdnjs.cloudflare.com/ajax/libs/antd/2.13.10/antd.css" "https://cdnjs.cloudflare.com/ajax/libs/antd/2.13.10/antd.min.css" ))
-   (include-css (if (env :dev) "/css/site.cs" "/css/site.min.css" ))
+   (include-css "https://cdnjs.cloudflare.com/ajax/libs/antd/2.13.10/antd.css")
+   (include-css (if (env :dev) "/css/site.cs" "/css/site.min.css" ))])
 
 (defn loading-page []
   (html5
