@@ -2,7 +2,8 @@
     (:require [reagent.core :as reagent :refer [atom]]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
-              [antizer.reagent :as ant]))
+              [antizer.reagent :as ant]
+              ))
 
 ;; -------------------------
 ;; Views
