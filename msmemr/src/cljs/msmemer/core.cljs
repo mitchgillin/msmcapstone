@@ -8,6 +8,7 @@
 
 ;;--------------------------
 ;; Components
+(def test-atom (atom 0))
 
 (defn actual-form []
   (fn [props]
@@ -23,15 +24,24 @@
 
 
 ;;Name card takes a name, the text for the card, and the width/height for the card. 
-(defn name-card [name text w h]
-  [ant/card {:style {:width w :height h} :title name} text])
+(defn name-card [name text]
+  [ant/card {:title name}
+   text
+   ])
 
+(defn name-card-pic [name text pic-url]
+  [ant/card {:title name}
+   text
+   [:div [:img {:width "80%" :height "80%":src pic-url}]]])
 
 ;; -------------------------
 ;; Views
 
 (defn home-page []
   [:div [:h2 "Welcome to msmemer"]
+
+   [:div @test-atom]
+   [ant/button {:type "primary" :on-click (fn [] (swap! test-atom inc)) } "Test Button"]
    [:div [:a {:href "/login"} "Go to Login Page"]]
    [:div [:a {:href "/about"} "go to About Page"]]
    [:div [:a {:href "/test"} "Go to Test Page"]]
@@ -40,16 +50,16 @@
 (defn about-page []
   [:div [:h2 "About msmemer"]
    [:div [:a {:href "/"} "go to the home page"]]
- 
-    [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" 400 150]
-
-    [ant/col
-     [name-card "Mitchell Gillin, CEO" "Mitch Gillin is a 4th year Biomedical Engineering student with a passion for human centered design and healthcare software. Mitch also enjoys cooking, golfing, and the occasional cold, refreshing beverage" 300 200]]
-    [ant/col
-     [name-card "Sean Rouffa" "Sean Rouffa is a 4th year Biomedical Engineering student who enjoys water polo and patient-focused design." 300 200]]
-    [ant/col
-    [name-card "Matthew Zetkulic" "Matthew is a 4th year Biomedical Engineer who excels at database management and rowing" 300 200]
-     ]
+     [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
+   [:div
+   [ant/row {:type "flex" :justify "top" :gutter 0}
+    [ant/col {:span 8}
+     [name-card-pic "Mitchell Gillin, CEO" "Mitch Gillin is a 4th year Biomedical Engineering student with a passion for human centered design and healthcare software. Mitch also enjoys cooking, golfing, and the occasional cold, refreshing beverage" "https://media-exp1.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAAwIAAAAJDAxNjFlYWVlLTFjZmMtNGM1YS1iYTNlLTE1OWZlODRkYTRiOQ.jpg"]]
+    [ant/col {:span 8}
+     [name-card-pic "Sean Rouffa" "Sean Rouffa is a 4th year Biomedical Engineering student who enjoys water polo and patient-focused design." "https://media-exp1.licdn.com/media/AAEAAQAAAAAAAAczAAAAJGE2M2NhNzg2LWY0MGEtNDU2ZC1iNGNlLWJmYjM1YjlkYjk4Mg.jpg"]]
+    [ant/col {:span 8}
+    [name-card-pic "Matthew Zetkulic" "Matthew is a 4th year Biomedical Engineer who excels at database management and rowing" "https://media-exp1.licdn.com/media/AAEAAQAAAAAAAA23AAAAJDcyN2IxMGI3LThlM2UtNDVmYy05Mzk5LTUyYzI2ZGVjZTg0NQ.jpg"]]
+    ]]
    ]
    )
 
@@ -62,13 +72,15 @@
   )
 
 (defn test-page []
-  [:div
-    [ant/col {:span 16}
-     [name-card "a" "b" 100 100]]
-    [ant/col {:span 16}
-     [name-card "a" "b" 100 100]]
-   ]
-   )
+  [:div 
+   [:h2 "Cards"]
+   [ant/card {:title "Title" :bordered true :class "card"}
+    [:p "Not the usual lorem ipsum"]] [:br]
+   [ant/card {:bordered true :class "card-photo"} 
+    [:div [:img {:src "https://unsplash.it/330/120/?random"}]]
+    [ant/col {:span 12} [:div [:h3 "Please rate me"]]]
+    [ant/col {:span 12} [ant/rate]]]])
+
 
 ;; -------------------------
 ;; Routes
