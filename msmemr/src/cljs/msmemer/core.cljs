@@ -10,7 +10,7 @@
 ;;--------------------------
 ;; Components
 (def test-atom (atom 0))
-(def root (m/connect "https://msmemr-e15f2.firebaseapp.com"))
+
 (defn actual-form []
   (fn [props]
     (let [my-form (ant/get-form)]
@@ -35,24 +35,37 @@
    text
    [:div [:img {:width "80%" :height "80%":src pic-url}]]])
 
+(defn side-menu []
+  [ant/menu {:mode "horizontal" :theme "light" :style {:text-align "center" :width "25%"}}
+   [ant/menu-item [:a {:href "/"} "Home"] ]
+   [ant/menu-item [:a {:href "/login"} "Login"]]
+   [ant/menu-item [:a {:href "/about"} "About"]]
+   [ant/menu-item [:a {:href "/test"} "Test"]]
+   ]
+   )
+
+(defn title-banner []
+  [:div
+   [ant/card {:title "Perdix Medical Solutions" :bordered true :style {:text-align "center" :color "grey"}} "Smarter Software. Happier Patients." ]])
+
 ;; -------------------------
 ;; Views
 
 (defn home-page []
-  [:div [:h1 {:style {:text-align "center" :color "blue"}}"Welcome to Perdix Medical Solutions" ]
-
+  [:div
+   [title-banner]
+   [side-menu]
    [:div @test-atom]
    [ant/button {:type "primary" :on-click (fn [] (swap! test-atom inc)) } "Increase Counter"]
    [ant/button {:type "primary" :on-click #(reset! test-atom 0)} "Reset counter"]
-   [:div [:a {:href "/login"} "Go to Login Page"]]
-   [:div [:a {:href "/about"} "go to About Page"]]
-   [:div [:a {:href "/test"} "Go to Test Page"]]
    ])
 
 (defn about-page []
-  [:div [:h1 {:style {:text-align "center"}} "About msmemer"]
-   [:div [:a {:href "/"} "go to the home page"]]
-     [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
+  [:div
+   [title-banner]
+   [:h1 {:style {:text-align "center"}} "About msmemer"]
+   [side-menu]
+   [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
    [:div
    [ant/row {:type "flex" :justify "top" :gutter 0}
     [ant/col {:span 8}
@@ -67,7 +80,9 @@
 
 (defn login-page []
   [:div
+   [title-banner]
    [:div  [:h1 {:style {:align "right"}} "Welcome! Lets get you logged in!"]]
+   [side-menu]
    [:div (ant/create-form (actual-form))]
   [:div [:a {:href "/"} "Home Page"]]
   [:div [:a {:href "/about"} "About Page"]]]
@@ -75,7 +90,8 @@
 
 (defn test-page []
   [:div
-   [:div (ant/create-form (actual-form))]])
+   [title-banner]
+   [side-menu]])
 
 
 ;; -------------------------
