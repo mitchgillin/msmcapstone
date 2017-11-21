@@ -3,13 +3,14 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [antizer.reagent :as ant]
+              [matchbox.core :as m]
               ))
 
 
 ;;--------------------------
 ;; Components
 (def test-atom (atom 0))
-
+(def root (m/connect "https://msmemr-e15f2.firebaseapp.com"))
 (defn actual-form []
   (fn [props]
     (let [my-form (ant/get-form)]
@@ -23,12 +24,12 @@
                             [ant/input])]])))
 
 
-;;Name card takes a name, the text for the card, and the width/height for the card. 
+;;Name card takes a name, the text for the card. 
 (defn name-card [name text]
   [ant/card {:title name}
    text
    ])
-
+;;Name-card-pic takes the name, text, and picture url of a card
 (defn name-card-pic [name text pic-url]
   [ant/card {:title name}
    text
@@ -38,17 +39,18 @@
 ;; Views
 
 (defn home-page []
-  [:div [:h2 "Welcome to msmemer"]
+  [:div [:h1 {:style {:text-align "center" :color "blue"}}"Welcome to Perdix Medical Solutions" ]
 
    [:div @test-atom]
-   [ant/button {:type "primary" :on-click (fn [] (swap! test-atom inc)) } "Test Button"]
+   [ant/button {:type "primary" :on-click (fn [] (swap! test-atom inc)) } "Increase Counter"]
+   [ant/button {:type "primary" :on-click #(reset! test-atom 0)} "Reset counter"]
    [:div [:a {:href "/login"} "Go to Login Page"]]
    [:div [:a {:href "/about"} "go to About Page"]]
    [:div [:a {:href "/test"} "Go to Test Page"]]
    ])
 
 (defn about-page []
-  [:div [:h2 "About msmemer"]
+  [:div [:h1 {:style {:text-align "center"}} "About msmemer"]
    [:div [:a {:href "/"} "go to the home page"]]
      [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
    [:div
@@ -72,14 +74,8 @@
   )
 
 (defn test-page []
-  [:div 
-   [:h2 "Cards"]
-   [ant/card {:title "Title" :bordered true :class "card"}
-    [:p "Not the usual lorem ipsum"]] [:br]
-   [ant/card {:bordered true :class "card-photo"} 
-    [:div [:img {:src "https://unsplash.it/330/120/?random"}]]
-    [ant/col {:span 12} [:div [:h3 "Please rate me"]]]
-    [ant/col {:span 12} [ant/rate]]]])
+  [:div
+   [:div (ant/create-form (actual-form))]])
 
 
 ;; -------------------------

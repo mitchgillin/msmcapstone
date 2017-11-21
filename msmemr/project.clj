@@ -18,7 +18,8 @@
                  [secretary "1.2.3"]
                  [venantius/accountant "0.2.0"
                   :exclusions [org.clojure/tools.reader]]
-                 [antizer "0.2.2"]]
+                 [antizer "0.2.2"]
+                 [matchbox "0.0.9"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.5"]
