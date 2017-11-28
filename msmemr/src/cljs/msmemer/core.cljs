@@ -4,8 +4,60 @@
               [accountant.core :as accountant]
               [antizer.reagent :as ant]
               [matchbox.core :as m]
+              [matchbox.registry :as mr]
+              [matchbox.async :as ma]
+              [cljs.core.async :as async]
               ))
 
+;;-------------------------
+;;Firebase Authentication
+
+(def prn-chan (async/chan))
+
+
+(defn safe-prn [& msgs]
+  (async/put! prn-chan msgs))
+
+
+
+
+;;sets the url for the database we are accessing
+(def base-uri "https://msmemr-e15f2.firebaseio.com")
+
+;;connects to the database with a random integer as a key; we want to use specific integers (physician numbers) 
+(def r (m/connect base-uri (str (rand-int 100))))
+
+;;still not working. 
+(m/auth r "mtg4ra@virginia.edu" "password123" safe-prn)
+
+
+
+
+
+(defn fireform []
+  (fn [props]
+    (let [fireform (ant/get-form)]
+      [ant/form
+       [ant/form-item {:label "Username"}
+        [ant/input]]
+       [ant/form-item {:label "Message"}
+        [ant/input]]
+       [ant/form-item {:wrapper-col {:offset 6}}
+        [ant/col {:span 4}
+         [ant/button {:type "primary" :on-click #(m/reset! r "working123")}
+          "Submit"]]]
+       ]
+      )))
+
+;;button connected to firebase; will initiate and set a database entry to working
+(defn firebutton []
+  [:div
+   [ant/button {:type "primary" :on-click #(m/reset! r "working")} "Set Working"]])
+
+;;button connected to firebase; will reset the value of the database entry above to working again
+(defn firebutton2 []
+  [:div
+   [ant/button {:type "primary" :on-click #(m/reset! r "Worked again!")} "Set to Working Again!"]])
 
 ;;--------------------------
 ;; Components
@@ -15,13 +67,17 @@
   (fn [props]
     (let [my-form (ant/get-form)]
       [ant/form
-       [ant/form-item {:label "Name"}
+       [ant/form-item {:label "E-mail"}
         (ant/decorate-field my-form "name" {:rules [{:required true}]}
                             [ant/input])]
        [ant/form-item {:label "Password"}
         ;; validates that the password field is not empty
         (ant/decorate-field my-form "password" {:rules [{:required true}]}
-                            [ant/input])]])))
+                            [ant/input])
+        ]
+       [ant/button {:type "primary" :on-click #(ant/validate-fields actual-form)}
+        "Submit"]]
+      )))
 
 
 ;;Name card takes a name, the text for the card. 
@@ -91,7 +147,9 @@
 (defn test-page []
   [:div
    [title-banner]
-   [side-menu]])
+   [side-menu]
+   [firebutton]
+   [firebutton2]])
 
 
 ;; -------------------------
