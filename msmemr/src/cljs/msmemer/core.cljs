@@ -110,11 +110,7 @@
 (defn home-page []
   [:div
    [title-banner]
-   [side-menu]
-   [:div @test-atom]
-   [ant/button {:type "primary" :on-click (fn [] (swap! test-atom inc)) } "Increase Counter"]
-   [ant/button {:type "primary" :on-click #(reset! test-atom 0)} "Reset counter"]
-   ])
+   [side-menu]])
 
 (defn about-page []
   [:div
