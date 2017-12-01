@@ -7,6 +7,8 @@
               [matchbox.registry :as mr]
               [matchbox.async :as ma]
               [cljs.core.async :as async]
+              [cljsjs.moment]
+
               ))
 
 ;;-------------------------
@@ -24,11 +26,15 @@
 ;;sets the url for the database we are accessing
 (def base-uri "https://msmemr-e15f2.firebaseio.com")
 
-;;connects to the database with a random integer as a key; we want to use specific integers (physician numbers) 
-(def r (m/connect base-uri (str (rand-int 100))))
+;;connects to the database with a random integer as a key; we want to use specific integers (physician numbers)
+;; Have everyone connect to a single top level key! 
+(def r (m/connect base-uri "main"))
 
-;;still not working. 
-(m/auth r "mtg4ra@virginia.edu" "password123" safe-prn)
+;;still not working.
+;; Firebase has sec reules. Auth controls the scope of the data allowed by a patient
+;;Store username and query for that specific persons data 
+
+
 
 
 
@@ -37,14 +43,14 @@
 (defn fireform []
   (fn [props]
     (let [fireform (ant/get-form)]
-      [ant/form
+      [ant/form {:onSubmit #() :layout "inline"}
        [ant/form-item {:label "Username"}
-        [ant/input]]
-       [ant/form-item {:label "Message"}
-        [ant/input]]
+        [ant/input {:placeholder "Enter Username" :onPressEnter #(m/reset! r (-> % .-target .-value))}]]
+       [ant/form-item {:label "Password"}
+        [ant/input {:placeholder "Enter Password" :onPressEnter #(m/reset! r (-> % .-target .-value))}]]
        [ant/form-item {:wrapper-col {:offset 6}}
         [ant/col {:span 4}
-         [ant/button {:type "primary" :on-click #(m/reset! r "working123")}
+         [ant/button {:type "primary" :htmlType "submit"}
           "Submit"]]]
        ]
       )))
@@ -59,9 +65,17 @@
   [:div
    [ant/button {:type "primary" :on-click #(m/reset! r "Worked again!")} "Set to Working Again!"]])
 
+(defn fireinput []
+  [:div
+   [ant/input {:placeholder "Enter Text Here" :onPressEnter #(m/reset! r (-> % .-target .-value))}]])
+
 ;;--------------------------
 ;; Components
 (def test-atom (atom 0))
+
+(defn my-calendar []
+  [ant/calendar {:fullscreen false :default-value (js/moment)}]
+)
 
 (defn actual-form []
   (fn [props]
@@ -92,31 +106,33 @@
    [:div [:img {:width "80%" :height "80%":src pic-url}]]])
 
 (defn side-menu []
-  [ant/menu {:mode "horizontal" :theme "light" :style {:text-align "center" :width "25%"}}
-   [ant/menu-item [:a {:href "/"} "Home"] ]
-   [ant/menu-item [:a {:href "/login"} "Login"]]
-   [ant/menu-item [:a {:href "/about"} "About"]]
-   [ant/menu-item [:a {:href "/test"} "Test"]]
-   ]
+   [ant/layout-content {:style { :margin-left "40%" :margin-right "38%"}}
+    [ant/menu {:mode "horizontal" :theme "light" :style {:text-align "center"}}
+     [ant/menu-item [:a {:href "/"} "Home"] ]
+     [ant/menu-item [:a {:href "/login"} "Login"]]
+     [ant/menu-item [:a {:href "/about"} "About"]]
+     [ant/menu-item [:a {:href "/test"} "Test"]]
+   ]]
    )
+
 
 (defn title-banner []
   [:div
-   [ant/card {:title "Perdix Medical Solutions" :bordered true :style {:text-align "center" :color "grey"}} "Smarter Software. Happier Patients." ]])
+   [ant/layout
+    [ant/layout-header {:class "banner" :style {:background "#999":text-align "center"}} "Perdix Medical Solutions"]
+    [ant/layout-header {:class "banner" :style {:background "#4e67d8" :text-align "center"}} "Smarter Software. Happier Patients"]
+   [side-menu]]])
 
 ;; -------------------------
 ;; Views
 
 (defn home-page []
   [:div
-   [title-banner]
-   [side-menu]])
-
+     [title-banner]])
 (defn about-page []
   [:div
    [title-banner]
-   [:h1 {:style {:text-align "center"}} "About msmemer"]
-   [side-menu]
+   [:h1 {:style {:text-align "center"}} "About Perdix Medical Solutions"]
    [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
    [:div
    [ant/row {:type "flex" :justify "top" :gutter 0}
@@ -133,19 +149,21 @@
 (defn login-page []
   [:div
    [title-banner]
-   [:div  [:h1 {:style {:align "right"}} "Welcome! Lets get you logged in!"]]
-   [side-menu]
-   [:div (ant/create-form (actual-form))]
-  [:div [:a {:href "/"} "Home Page"]]
-  [:div [:a {:href "/about"} "About Page"]]]
+   [ant/layout 
+   [ant/layout-content {:style {:margin-left "20%" :margin-right "20%"}}
+    [:div  [:h1 {:style {:margin-top "5%":text-align "center"}} "Welcome! Lets get you logged in!"]]]
+
+    [ant/layout-content {:style {:margin-left "35%" :margin-top "1%"}}
+    [fireform]]]
+    ]
+
   )
 
 (defn test-page []
   [:div
    [title-banner]
-   [side-menu]
-   [firebutton]
-   [firebutton2]])
+   [my-calendar]
+   ])
 
 
 ;; -------------------------

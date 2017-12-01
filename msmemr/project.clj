@@ -19,7 +19,8 @@
                  [venantius/accountant "0.2.0"
                   :exclusions [org.clojure/tools.reader]]
                  [antizer "0.2.2"]
-                 [matchbox "0.0.9"]]
+                 [matchbox "0.0.9"]
+                 [re-frame "0.10.1"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.5"]
