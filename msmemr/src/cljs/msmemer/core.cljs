@@ -5,11 +5,11 @@
               [antizer.reagent :as ant]
               [matchbox.core :as m]
               [matchbox.registry :as mr]
-              [matchbox.async :as ma]
+              [matchbox.async :as ma] 
               [cljs.core.async :as async]
               [cljsjs.moment]
 
-              ))
+              )) 
 
 ;;-------------------------
 ;;Firebase Authentication
@@ -37,24 +37,36 @@
 
 
 
+(def userinfo (reagent/atom {:name "Test" :message  "test2"}))
+(def test-atom (reagent/atom 4))
 
+(defn test-input []
+  [:div
+   [ant/input {:placeholder "Enter Username Here" :on-change #(swap! userinfo assoc :name (-> % .-target .-value))}]
+   [ant/input {:placeholder "Enter Message here" :on-change #(swap!  userinfo assoc :message (-> % .-target .-value))}]])
 
+(defn test-display []
+  [:div
+   [:p "Name is currently : " (@userinfo :name)]
+   [:p "Message is currently: " (@userinfo :message)]
+   ])
 
 (defn fireform []
   (fn [props]
     (let [fireform (ant/get-form)]
       [ant/form {:onSubmit #() :layout "inline"}
        [ant/form-item {:label "Username"}
-        [ant/input {:placeholder "Enter Username" :onPressEnter #(m/reset! r (-> % .-target .-value))}]]
+        [ant/input {:placeholder "Enter Username" :on-change #(swap! userinfo assoc :name (-> % .-target .-value))}]]
        [ant/form-item {:label "Password"}
-        [ant/input {:placeholder "Enter Password" :onPressEnter #(m/reset! r (-> % .-target .-value))}]]
+        [ant/input {:placeholder "Enter Password" :on-change #(swap! userinfo assoc :message (-> % .-target .-value))}]]
        [ant/form-item {:wrapper-col {:offset 6}}
-        [ant/col {:span 4}
-         [ant/button {:type "primary" :htmlType "submit"}
-          "Submit"]]]
+        ]
+       [ant/form-item
+        [ant/button {:type "primary" :on-click #( (m/reset! r @userinfo))}]]
        ]
       )))
 
+ 
 ;;button connected to firebase; will initiate and set a database entry to working
 (defn firebutton []
   [:div
@@ -71,28 +83,10 @@
 
 ;;--------------------------
 ;; Components
-(def test-atom (atom 0))
 
 (defn my-calendar []
   [ant/calendar {:fullscreen false :default-value (js/moment)}]
 )
-
-(defn actual-form []
-  (fn [props]
-    (let [my-form (ant/get-form)]
-      [ant/form
-       [ant/form-item {:label "E-mail"}
-        (ant/decorate-field my-form "name" {:rules [{:required true}]}
-                            [ant/input])]
-       [ant/form-item {:label "Password"}
-        ;; validates that the password field is not empty
-        (ant/decorate-field my-form "password" {:rules [{:required true}]}
-                            [ant/input])
-        ]
-       [ant/button {:type "primary" :on-click #(ant/validate-fields actual-form)}
-        "Submit"]]
-      )))
-
 
 ;;Name card takes a name, the text for the card. 
 (defn name-card [name text]
@@ -156,13 +150,13 @@
     [ant/layout-content {:style {:margin-left "35%" :margin-top "1%"}}
     [fireform]]]
     ]
-
   )
 
 (defn test-page []
   [:div
    [title-banner]
-   [my-calendar]
+   [fireform]
+   [test-display]
    ])
 
 
