@@ -92,7 +92,7 @@
    [:div [:img {:width "80%" :height "80%":src pic-url}]]])
 
 (defn side-menu []
-  [ant/menu {:mode "horizontal" :theme "light" :style {:text-align "center" :width "25%"}}
+  [ant/menu {:mode "horizontal" :theme "light" :style {:position "relative" :left "35%" :right "40%" :text-align "center"}}
    [ant/menu-item [:a {:href "/"} "Home"] ]
    [ant/menu-item [:a {:href "/login"} "Login"]]
    [ant/menu-item [:a {:href "/about"} "About"]]
@@ -139,10 +139,8 @@
    [title-banner]
    [:div  [:h1 {:style {:align "right"}} "Welcome! Lets get you logged in!"]]
    [side-menu]
-   [:div (ant/create-form (actual-form))]
-  [:div [:a {:href "/"} "Home Page"]]
-  [:div [:a {:href "/about"} "About Page"]]]
-  )
+   [:div (ant/create-form (actual-form))]]
+ )
 
 (defn test-page []
   [:div
