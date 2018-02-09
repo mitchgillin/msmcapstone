@@ -24,7 +24,6 @@
   :jvm-opts ["--add-modules" "java.xml.bind"]
  
 
-  :jvm-opts ["--add-modules" "java.xml.bind"]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.5"]
