@@ -59,11 +59,48 @@
   [:div
    [ant/button {:type "primary" :on-click #(m/reset! r "Worked again!")} "Set to Working Again!"]])
 
-;;--------------------------
-;; Components
-(def test-atom (atom 0))
 
-(defn actual-form []
+;;-------------------------
+;;Firebase Authentication
+
+(def prn-chan (async/chan))
+
+
+(defn safe-prn [& msgs]
+  (async/put! prn-chan msgs))
+
+
+
+
+;;sets the url for the database we are accessing
+(def base-uri "https://msmemr-e15f2.firebaseio.com")
+
+;;connects to the database with a random integer as a key; we want to use specific integers (physician numbers)
+;; Have everyone connect to a single top level key! 
+(def r (m/connect base-uri "main"))
+
+;;still not working.
+;; Firebase has sec reules. Auth controls the scope of the data allowed by a patient
+;;Store username and query for that specific persons data 
+
+
+
+
+(def userinfo (reagent/atom {:name "Test" :message  "test2"}))
+(def test-atom (reagent/atom 4))
+
+(defn test-input []
+  [:div
+   [ant/input {:placeholder "Enter Username Here" :on-change #(swap! userinfo assoc :name (-> % .-target .-value))}]
+   [ant/input {:placeholder "Enter Message here" :on-change #(swap!  userinfo assoc :message (-> % .-target .-value))}]])
+
+(defn test-display []
+  [:div
+   [:p "Name is currently : " (@userinfo :name)]
+   [:p "Message is currently: " (@userinfo :message)]
+   ])
+
+(defn fireform []
   (fn [props]
     (let [my-form (ant/get-form)]
       [ant/form
@@ -79,6 +116,22 @@
         "Submit"]]
       )))
 
+
+;;button connected to firebase; will reset the value of the database entry above to working again
+(defn firebutton2 []
+  [:div
+   [ant/button {:type "primary" :on-click #(m/reset! r "Worked again!")} "Set to Working Again!"]])
+
+(defn fireinput []
+  [:div
+   [ant/input {:placeholder "Enter Text Here" :onPressEnter #(m/reset! r (-> % .-target .-value))}]])
+
+;;--------------------------
+;; Components
+
+(defn my-calendar []
+  [ant/calendar {:fullscreen false :default-value (js/moment)}]
+)
 
 ;;Name card takes a name, the text for the card. 
 (defn name-card [name text]
@@ -100,10 +153,6 @@
    ]
    )
 
-(defn title-banner []
-  [:div
-   [ant/card {:title "Perdix Medical Solutions" :bordered true :style {:text-align "center" :color "grey"}} "Smarter Software. Happier Patients." ]])
-
 ;; -------------------------
 ;; Views
 
@@ -121,6 +170,12 @@
    [title-banner]
    [:h1 {:style {:text-align "center"}} "About msmemer"]
    [side-menu]
+=======
+     [title-banner]])
+(defn about-page []
+  [:div
+   [title-banner]
+   [:h1 {:style {:text-align "center"}} "About Perdix Medical Solutions"]
    [name-card "Perdix Medical Solutions" "Perdix Medical Solutions is a Charlottesville Startup focusing on improving patinet-physician relationships thorugh better, smarter software" ]
    [:div
    [ant/row {:type "flex" :justify "top" :gutter 0}
@@ -148,6 +203,7 @@
    [side-menu]
    [firebutton]
    [firebutton2]])
+
 
 
 ;; -------------------------
