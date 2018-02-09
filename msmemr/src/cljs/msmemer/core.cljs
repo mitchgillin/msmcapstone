@@ -62,7 +62,7 @@
        [ant/form-item {:wrapper-col {:offset 6}}
         ]
        [ant/form-item
-        [ant/button {:type "primary" :on-click #( (m/reset! r @userinfo))}]]
+        [ant/button  {:type "primary" :on-click #( (m/reset! r @userinfo))}  "Login"  ]   ]
        ]
       )))
 
@@ -100,7 +100,7 @@
    [:div [:img {:width "80%" :height "80%":src pic-url}]]])
 
 (defn side-menu []
-   [ant/layout-content {:style { :margin-left "40%" :margin-right "38%"}}
+   [ant/layout-content {:style { :position "relative" :margin-left "40%" :margin-right "38%"}}
     [ant/menu {:mode "horizontal" :theme "light" :style {:text-align "center"}}
      [ant/menu-item [:a {:href "/"} "Home"] ]
      [ant/menu-item [:a {:href "/login"} "Login"]]
@@ -114,7 +114,7 @@
   [:div
    [ant/layout
     [ant/layout-header {:class "banner" :style {:background "#999":text-align "center"}} "Perdix Medical Solutions"]
-    [ant/layout-header {:class "banner" :style {:background "#4e67d8" :text-align "center"}} "Smarter Software. Happier Patients"]
+    [ant/layout-header {:class "banner" :style {:background "#999" :text-align "center"}} "Smarter Software. Happier Patients"]
    [side-menu]]])
 
 ;; -------------------------
